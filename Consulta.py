@@ -1,24 +1,23 @@
-import pandas as pd
-import numpy as np
+import matplotlib.pyplot as plt
 
-np.random.seed(42)
+# Receita total
+receita_total = df["valor_total"].sum()
 
-produtos = ["Cimento", "Areia", "Tijolo", "Ferro", "Brita", "Cal", "Argamassa"]
-categorias = ["Construção", "Estrutura", "Acabamento"]
+# Receita por produto
+receita_produto = df.groupby("produto")["valor_total"].sum().sort_values(ascending=False)
 
-n = 500  # volume de dados
+# Receita por categoria
+receita_categoria = df.groupby("categoria")["valor_total"].sum()
 
-df = pd.DataFrame({
-    "produto": np.random.choice(produtos, n),
-    "categoria": np.random.choice(categorias, n),
-    "quantidade": np.random.randint(1, 200, n),
-    "preco": np.round(np.random.uniform(5, 100, n), 2),
-    "data": pd.date_range(start="2024-01-01", periods=n, freq="D")
-})
+# Top 5 produtos
+top5 = receita_produto.head(5)
 
-df["valor_total"] = df["quantidade"] * df["preco"]
+# Produtos com menor desempenho
+bottom5 = receita_produto.tail(5)
 
-print(df.head())
+print("\n💰 Receita total:", receita_total)
+print("\n🏆 Top 5 produtos:")
+print(top5)
 
-# salvar CSV
-df.to_csv("dados_grandes.csv", index=False)
+print("\n⚠️ Produtos com menor receita:")
+print(bottom5)
