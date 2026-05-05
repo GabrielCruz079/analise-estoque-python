@@ -1,23 +1,23 @@
+import pandas as pd
 import matplotlib.pyplot as plt
 
-# Receita total
-receita_total = df["valor_total"].sum()
+df = pd.read_csv("dados.csv", sep=None, engine="python", encoding="latin1")
 
-# Receita por produto
-receita_produto = df.groupby("produto")["valor_total"].sum().sort_values(ascending=False)
+df.columns = ["produto", "quantidade", "preco", "custo"]
 
-# Receita por categoria
-receita_categoria = df.groupby("categoria")["valor_total"].sum()
+df["preco"] = (
+    df["preco"]
+    .astype(str)
+    .str.replace("R$", "", regex=False)
+    .str.replace(",", ".", regex=False)
+    .str.strip()
+)
 
-# Top 5 produtos
-top5 = receita_produto.head(5)
+df["preco"] = pd.to_numeric(df["preco"], errors="coerce")
+print(df)
 
-# Produtos com menor desempenho
-bottom5 = receita_produto.tail(5)
-
-print("\n💰 Receita total:", receita_total)
-print("\n🏆 Top 5 produtos:")
-print(top5)
-
-print("\n⚠️ Produtos com menor receita:")
-print(bottom5)
+# gráfico
+df.plot(x="produto", y="quantidade", kind="bar")
+plt.title("Quantidade em Estoque")
+plt.xlabel("Produto")
+plt.ylabel("Quantidade")
